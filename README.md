@@ -28,6 +28,14 @@ class PostForm < Reform::Form
 end
 ```
 
+## Contributing
+
+You can run tests with the Rake task:
+
+```
+$ bundle exec rake test
+```
+
 ## License
 
 [MIT](LICENSE.txt)
