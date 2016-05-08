@@ -19,7 +19,7 @@ describe "the reform plugin" do
     record_class.include @uploader.class[:attachment]
 
     form_class = Class.new(Reform::Form)
-    form_class.prepend @uploader.class[:attachment]
+    form_class.include @uploader.class[:attachment]
 
     @record = record_class.new
     @form = form_class.new(@record)
@@ -104,10 +104,6 @@ describe "the reform plugin" do
     @uploader.class.plugin :cached_attachment_data
     @form.class.prepend @uploader.class[:attachment]
     assert_respond_to @form, :cached_attachment_data
-  end
-
-  it "raises an error when attachment module is included" do
-    assert_raises(Shrine::Error) { @form.class.include @uploader.class[:attachment] }
   end
 
   it "doesn't define any Reform methods on non-Reform objects" do

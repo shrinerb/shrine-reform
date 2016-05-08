@@ -8,10 +8,18 @@ class Shrine
           super
         end
 
-        def prepended(form)
+        def included(form)
           super
 
           return unless form < ::Reform::Form
+
+          properties = [
+            :"#{@name}",
+            :"#{@name}_remote_url",
+            :"#{@name}_data_uri",
+            :"remove_#{@name}",
+            :"cached_#{@name}_data",
+          ]
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def prepopulate!(*)
@@ -26,7 +34,11 @@ class Shrine
           RUBY
 
           form.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-            property :#{@name}, virtual: true
+            def self.create_accessors(name, definition)
+              return if #{properties}.include?(name)
+              super
+            end
+
             attr_accessor :#{@name}_data
 
             validate do
@@ -36,15 +48,9 @@ class Shrine
             end
           RUBY
 
-          form.send(:property, :"#{@name}_remote_url", virtual: true) if instance_methods.include?(:"#{@name}_remote_url")
-          form.send(:property, :"#{@name}_data_uri", virtual: true) if instance_methods.include?(:"#{@name}_data_uri")
-          form.send(:property, :"remove_#{@name}", virtual: true) if instance_methods.include?(:"remove_#{@name}")
-          form.send(:property, :"cached_#{@name}_data", virtual: true) if instance_methods.include?(:"cached_#{@name}_data")
-        end
-
-        def included(form)
-          super
-          raise Error, "Reform attachment modules have to be prepended instead of included" if form < ::Reform::Form
+          (properties & instance_methods).each do |name|
+            form.send(:property, name, virtual: true)
+          end
         end
       end
     end

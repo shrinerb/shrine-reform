@@ -11,7 +11,7 @@ gem "shrine", github: "janko-m/shrine"
 
 ## Usage
 
-The reform plugin can be loaded globally alongside the activerecord plugin.
+The reform plugin can be loaded globally alongside activerecord plugin.
 
 ```rb
 Shrine.plugin :activerecord
@@ -24,12 +24,9 @@ end
 ```
 ```rb
 class PostForm < Reform::Form
-  prepend ImageUploader[:image]
+  include ImageUploader[:image]
 end
 ```
-
-Notice that the only difference from ActiveRecord is that a Reform attachment
-module has to be *prepended* instead of included.
 
 ## License
 
