@@ -4,10 +4,6 @@ class Shrine
   module Plugins
     module Reform
       module AttachmentMethods
-        def initialize(*)
-          super
-        end
-
         def included(form)
           super
 
@@ -35,8 +31,7 @@ class Shrine
 
           form.class_eval <<-RUBY, __FILE__, __LINE__ + 1
             def self.create_accessors(name, definition)
-              return if #{properties}.include?(name)
-              super
+              super unless #{properties}.include?(name)
             end
 
             attr_accessor :#{@name}_data
