@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name          = "shrine-reform"
-  gem.version       = "0.1.1"
+  gem.version       = "0.1.2"
 
   gem.required_ruby_version = ">= 2.1"
 
@@ -13,9 +13,9 @@ Gem::Specification.new do |gem|
   gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*.rb", "*.gemspec"]
   gem.require_path = "lib"
 
-  gem.add_dependency "shrine"
+  gem.add_dependency "shrine", "~> 2.0"
+  gem.add_dependency "reform"
 
-  gem.add_development_dependency "reform"
   gem.add_development_dependency "activerecord", "~> 4.2"
   gem.add_development_dependency "sqlite3"
   gem.add_development_dependency "shrine-memory"

@@ -6,7 +6,6 @@ Provides [Reform] integration for [Shrine].
 
 ```ruby
 gem "shrine-reform"
-gem "shrine", github: "janko-m/shrine"
 ```
 
 ## Usage
