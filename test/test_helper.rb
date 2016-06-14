@@ -5,6 +5,7 @@ require "minitest/pride"
 
 require "shrine"
 require "shrine/storage/memory"
+require "shrine/plugins/reform"
 
 require "stringio"
 

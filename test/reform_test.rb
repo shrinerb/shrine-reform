@@ -7,7 +7,7 @@ ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:"
 ActiveRecord::Base.connection.create_table(:records) { |t| t.text :attachment_data }
 ActiveRecord::Base.raise_in_transactional_callbacks = true
 
-describe "the reform plugin" do
+describe Shrine::Plugins::Reform do
   before do
     @uploader = uploader do
       plugin :activerecord
