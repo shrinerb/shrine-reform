@@ -72,10 +72,17 @@ describe Shrine::Plugins::Reform do
   end
 
   it "doesn't sync attachment that hasn't changed" do
-    @record.attachment_data = @record.attachment_attacher.cache.upload(StringIO.new).to_json
+    @record.attachment_data = @record.attachment_attacher.cache!(StringIO.new).to_json
     @form.prepopulate!
     @form.sync
     refute @record.attachment_attacher.attached?
+  end
+
+  it "doesn't sync when model doesn't have attachment module" do
+    @record.instance_eval { undef attachment= }
+    @form.attachment = StringIO.new
+    @form.sync
+    assert_equal nil, @record.attachment_data
   end
 
   it "detects remote_url plugin" do

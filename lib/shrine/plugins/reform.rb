@@ -25,7 +25,9 @@ class Shrine
 
             def sync(*)
               super
-              model.#{@name} = @#{@name}_data if defined?(@#{@name}_data)
+              if instance_variable_defined?(:@#{@name}_data)
+                model.#{@name} = @#{@name}_data if model.respond_to?(:#{@name}=)
+              end
             end
           RUBY
 
