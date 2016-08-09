@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name          = "shrine-reform"
-  gem.version       = "0.1.3"
+  gem.version       = "0.1.4"
 
   gem.required_ruby_version = ">= 2.1"
 

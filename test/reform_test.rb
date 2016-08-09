@@ -3,9 +3,6 @@ require "active_record"
 require "reform"
 require "reform/rails"
 
-ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
-ActiveRecord::Base.connection.create_table(:records) { |t| t.text :attachment_data }
-
 describe Shrine::Plugins::Reform do
   before do
     @uploader = uploader do
@@ -13,20 +10,40 @@ describe Shrine::Plugins::Reform do
       plugin :reform
     end
 
+    ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
+    ActiveRecord::Base.connection.create_table(:records) do |t|
+      t.text :attachment_data
+    end
+    ActiveRecord::Base.connection.create_table(:nested_records) do |t|
+      t.integer :record_id
+      t.text :attachment_data
+    end
+
     record_class = Object.const_set("Record", Class.new(ActiveRecord::Base))
     record_class.table_name = :records
     record_class.include @uploader.class[:attachment]
+    record_class.has_many :nested_records
+
+    nested_class = Object.const_set("NestedRecord", Class.new(ActiveRecord::Base))
+    nested_class.table_name = :nested_records
+    nested_class.include @uploader.class[:attachment]
+    nested_class.belongs_to :record
+
+    nested_form_class = Class.new(Reform::Form)
+    nested_form_class.include @uploader.class[:attachment]
 
     form_class = Class.new(Reform::Form)
     form_class.include @uploader.class[:attachment]
+    form_class.collection :nested_records, populate_if_empty: NestedRecord, form: nested_form_class
 
     @record = record_class.new
     @form = form_class.new(@record)
   end
 
   after do
-    @record.class.delete_all
+    ActiveRecord::Base.remove_connection
     Object.send(:remove_const, "Record")
+    Object.send(:remove_const, "NestedRecord")
   end
 
   it "prepopulates attachment" do
@@ -42,18 +59,29 @@ describe Shrine::Plugins::Reform do
   it "populates attachment" do
     @form.validate(attachment: StringIO.new)
     assert_kind_of Shrine::UploadedFile, @form.attachment
+
+    @form.validate(nested_records: [{attachment: StringIO.new}])
+    assert_kind_of Shrine::UploadedFile, @form.nested_records[0].attachment
   end
 
   it "merges attachment validations" do
     @record.attachment_attacher.class.validate { errors << "Error" }
+
     @form.validate(attachment: StringIO.new)
     assert_equal ["Error"], @form.errors[:attachment]
+
+    @form.validate(nested_records: [{attachment: StringIO.new}])
+    assert_equal ["Error"], @form.errors["nested_records.attachment"]
   end
 
   it "syncs attachment" do
     @form.validate(attachment: StringIO.new)
     @form.sync
     assert_kind_of Shrine::UploadedFile, @record.attachment
+
+    @form.validate(nested_records: [{attachment: StringIO.new}])
+    @form.sync
+    assert_kind_of Shrine::UploadedFile, @record.nested_records[0].attachment
   end
 
   it "doesn't sync when attachment wasn't set" do
