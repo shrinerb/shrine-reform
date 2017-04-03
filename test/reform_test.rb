@@ -21,19 +21,19 @@ describe Shrine::Plugins::Reform do
 
     record_class = Object.const_set("Record", Class.new(ActiveRecord::Base))
     record_class.table_name = :records
-    record_class.include @uploader.class[:attachment]
+    record_class.include @uploader.class::Attachment.new(:attachment)
     record_class.has_many :nested_records
 
     nested_class = Object.const_set("NestedRecord", Class.new(ActiveRecord::Base))
     nested_class.table_name = :nested_records
-    nested_class.include @uploader.class[:attachment]
+    nested_class.include @uploader.class::Attachment.new(:attachment)
     nested_class.belongs_to :record
 
     nested_form_class = Class.new(Reform::Form)
-    nested_form_class.include @uploader.class[:attachment]
+    nested_form_class.include @uploader.class::Attachment.new(:attachment)
 
     form_class = Class.new(Reform::Form)
-    form_class.include @uploader.class[:attachment]
+    form_class.include @uploader.class::Attachment.new(:attachment)
     form_class.collection :nested_records, populate_if_empty: NestedRecord, form: nested_form_class
 
     @record = record_class.new

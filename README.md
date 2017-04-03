@@ -18,12 +18,12 @@ Shrine.plugin :reform
 ```
 ```rb
 class Post < ActiveRecord::Base
-  include ImageUploader[:image]
+  include ImageUploader::Attachment.new(:image)
 end
 ```
 ```rb
 class PostForm < Reform::Form
-  include ImageUploader[:image]
+  include ImageUploader::Attachment.new(:image)
 end
 ```
 
