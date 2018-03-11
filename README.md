@@ -40,4 +40,4 @@ $ bundle exec rake test
 [MIT](LICENSE.txt)
 
 [Reform]: https://github.com/apotonick/reform
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
