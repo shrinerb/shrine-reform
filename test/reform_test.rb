@@ -1,5 +1,4 @@
 require "test_helper"
-require "active_record"
 require "reform"
 require "reform/rails"
 
@@ -95,7 +94,7 @@ describe Shrine::Plugins::Reform do
     @form.prepopulate!
     @form.validate(attachment: nil)
     @form.sync
-    assert_equal nil, @record.attachment
+    assert_nil @record.attachment
   end
 
   it "doesn't sync attachment that hasn't changed" do
@@ -109,7 +108,8 @@ describe Shrine::Plugins::Reform do
     @record.instance_eval { undef attachment= }
     @form.attachment = StringIO.new
     @form.sync
-    assert_equal nil, @record.attachment_data
+
+    assert_nil @record.attachment_data
   end
 
   it "detects remote_url plugin" do

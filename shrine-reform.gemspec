@@ -15,6 +15,8 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "shrine", "~> 2.0"
   gem.add_dependency "reform"
+  gem.add_dependency "rails"
+  gem.add_dependency "reform-rails"
 
   gem.add_development_dependency "activerecord", "~> 5.0"
   gem.add_development_dependency "sqlite3"

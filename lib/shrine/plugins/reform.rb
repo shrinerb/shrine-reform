@@ -1,4 +1,6 @@
-require "reform"
+require 'reform'
+require 'reform/rails'
+require 'reform/form/active_model/validations'
 
 class Shrine
   module Plugins
@@ -8,6 +10,7 @@ class Shrine
           super
 
           return unless form < ::Reform::Form
+          form.send(:include, ::Reform::Form::ActiveModel::Validations)
 
           properties = [
             :"#{@name}",
