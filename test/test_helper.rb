@@ -1,5 +1,7 @@
-require "bundler/setup"
+ENV["RAILS_ENV"] = "test"
 
+require "bundler/setup"
+require_relative "../test/dummy/config/environment"
 require "minitest/autorun"
 require "minitest/pride"
 
